@@ -4,7 +4,6 @@ from assignment.line import *
 from assignment.shortest_path import ShortestPath as SPP
 #import assignment.globalpara as gl
 import math
-
 def find_y_flow(_net_a,_net_b,od_info,od_flow,od_flow_a,od_flow_b,_label_station,per_b,sita,fy):
     va_y = {}
     vb_y = {}
@@ -80,8 +79,8 @@ def initialization(_net_a,_net_b,od_info,od_flow,_label_lane,_label_station,dema
         va[l] = 0
     for l in _net_b.edge_id_set:
         vb[l] = 0
-    od_flow_a =deepcopy(od_flow)
-    od_flow_b =deepcopy(od_flow)
+    od_flow_a = deepcopy(od_flow)
+    od_flow_b = deepcopy(od_flow)
     per_a = deepcopy(od_flow)
     per_b = deepcopy(od_flow)
     No_edge = len(_label_lane)
@@ -177,7 +176,7 @@ def FW_main(network_a, network_b,od_info,od_flow,_label_lane,_label_station,time
     IterCounter = 0
     converge = 1
     time_cost=0
-    while converge >=UE_converge:
+    while converge>=UE_converge and IterCounter<500:
 #    while IterCounter<300:
         No_edge = len(_label_lane)
         update_net_cost(network_a,network_b,va_x,vb_x,_label_lane,No_edge)
@@ -199,20 +198,21 @@ def FW_main(network_a, network_b,od_info,od_flow,_label_lane,_label_station,time
             else:
                 od_flow_b[o][d]=0
             od_flow_a[o][d]=od_flow[o][d]-od_flow_b[o][d]
-        
+        converge = cal_limit(va_x,va_old, vb_x, vb_old)
+        IterCounter+=1
+        # print("iter={0},gap={1}".format(IterCounter,converge))
+ 
+
 #        for o in origins:
 #            for d in destinations:
-#                if od_flow[o][d]==0:
-#                    od_flow_b[o][d]=0
-#                elif per_b[o][d]!=0:
+#                if od_flow[o][d]==-1:
+#                    od_flow_b[o][d]=-1
+#                elif per_b[o][d]!=-1:
 #                    od_flow_b[o][d] += step*(v_b[o][d]-od_flow_b[o][d])
 #                else:
-#                    od_flow_b[o][d]=0
+#                    od_flow_b[o][d]=-1
 #                od_flow_a[o][d]=od_flow[o][d]-od_flow_b[o][d]
-        converge = cal_limit(va_x,va_old, vb_x, vb_old)  
-        
-        IterCounter+=1
-        
+       
         
     #    0731
 #    vol_b_o = dict()

@@ -11,7 +11,6 @@ import assignment
 from assignment.assign import *
 from assignment.line import *
 from assignment.graph import *
-import random
 import copy
 import time
 import csv
@@ -19,18 +18,12 @@ import set_exp_id as sid
 
 data = import_data.import_data()
 
-#Pop_size = 20
-# G=40
-#
-#
-# M=10000000000000
-
-
 def population(Pop_size, lane, demand, time_station):
     Initial_Group = np.array(
         np.zeros((Pop_size, len(lane)+len(demand)+2)), dtype=np.int64)
     for i in range(Pop_size):
         Initial_Group[i, 0:len(lane)] = np.random.randint(0, 2, len(lane))
+        # print(Initial_Group[i, 0:len(lane)])
 #        Initial_Group[i,len(lane):len(lane)+len(station)]= np.random.randint(0,len(demand)+1,len(station))
 #        Initial_Group[i,len(lane):len(lane)+len(station)]= np.array([1,0,0,2,0,3])
         for j in range(0, len(demand)):
@@ -42,7 +35,7 @@ def population(Pop_size, lane, demand, time_station):
 #            else:
 #                Initial_Group[i,len(lane)+j]=0
             f = list(time_station["N{:0>3}".format(demand[j])].keys())
-            Initial_Group[i, len(lane)+j] = random.choice(f)
+            Initial_Group[i, len(lane)+j] = np.random.choice(f)
     return Initial_Group
 
 
@@ -113,7 +106,7 @@ def crossover(Group, couples, cross_p, lane, demand):  # cross_p为交叉概率
     for i in range(np.size(couples, 0)):
         unit_one = Group[couples[i, 0], :]
         unit_two = Group[couples[i, 1], :]
-        p = random.random()
+        p = np.random.random()
         if p <= cross_p:
             # 交叉使用从随机位置交叉尾部
             '''
@@ -182,7 +175,7 @@ def mutation(Group, mut_p, lane, cost_station, cost_lane, time_station, Budget, 
             else:
                 new_population[i, j] = 0
         for j in range(point3, point4+1):
-            d = random.choice(
+            d = np.random.choice(
                 list(time_station["N{:0>3}".format(demand[j-len(lane)])].keys()))
             if d == Group[i, j]:
                 d = 0
@@ -382,6 +375,7 @@ def run_ga(Ex_ID):
     start_time = time.time()
     Initial_Group = population(Pop_size, lane, demand, time_station)
     for i in range(Pop_size):
+        print("GA ini sol = ",i)
         Initial_Group[i, np.size(Initial_Group, 1)-2], Initial_Group[i, np.size(Initial_Group, 1)-1], once_FW_time = cal_new_cost(Initial_Group[i, len(lane):len(lane)+len(
             station)], Initial_Group[i, 0:len(lane)], cost_station, cost_lane, lane, time_station, Budget, od_info, od_flow, nt_a, nt_b, UE_converge, sita, fy, demand)
         cal_FW_time = cal_FW_time + once_FW_time
@@ -401,7 +395,7 @@ def run_ga(Ex_ID):
         np.zeros((Max_gen, np.size(Initial_Group, 1))), dtype=np.int64)
     sol_cost[0, :] = children[0, :]
     for i in range(1, Max_gen):
-        print("GA Generation: ",i)
+        print("GA Generation = ",i)
         parent = father_pair(Pop_size)
         after_cross = crossover(children, parent, cross_p, lane, demand)
         after_mutation, n_FW_time = mutation(after_cross, mutation_p, lane, cost_station, cost_lane,

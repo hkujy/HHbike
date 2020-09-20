@@ -220,7 +220,7 @@ def set_Ex_ID(Ex_ID,_alg=""):
             mutation_p = 0.3
  
 
-    UE_converge = 0.1
+    # UE_converge = 0.001
     if _alg is "HH":
         return case_ID, demand_ID, Budget, fy, sita, UE_converge, isOutPutDetail, Max_gen
     elif _alg is "GA":

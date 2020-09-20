@@ -11,16 +11,12 @@ import assignment
 from assignment.assign import *
 from assignment.line import *
 from assignment.graph import *
-import random
 import copy
 import time
 import csv
 import set_exp_id as sid
 
-
-Run_time = 1
 data = import_data.import_data()
-
 
 # Step 4: Calculate the cost
 def cal_new_cost(_label_station, _label_lane, _cost_station, _cost_lane, _lane, time_station, Budget, od_info, od_flow, nt_a, nt_b, UE_converge, sita, fy, demand):
@@ -71,7 +67,7 @@ def cal_L0_add_bike_link(_label_lane, _lane):
         if _label_lane[i] == 0:
             d.append(i)
     if len(d) != 0:
-        e = random.choice(d)
+        e = np.random.choice(d)
         _label_lane[e] = 1
     return _label_lane
 
@@ -85,7 +81,7 @@ def cal_L1_remove_bike_link(_label_lane, _lane):
         if _label_lane[i] == 1:
             d.append(i)
     if len(d) != 0:
-        e = random.choice(d)
+        e = np.random.choice(d)
         _label_lane[e] = 0
     return _label_lane
 
@@ -125,10 +121,10 @@ def cal_L2_add_bike_station(_label_station, _station, _time_station, _demand, _o
         if _label_station[j] == 0:
             d.append(j)
     if len(d) != 0:
-        e = random.choice(d)
+        e = np.random.choice(d)
         f = []
         f = list(_time_station["N{:0>3}".format(_demand[e])].keys())
-        _label_station[e] = random.choice(f)
+        _label_station[e] = np.random.choice(f)
 
         for i in d:
             if ["N{:0>3}".format(_demand[e])] in list(_od_flow.keys()):
@@ -136,13 +132,13 @@ def cal_L2_add_bike_station(_label_station, _station, _time_station, _demand, _o
                     g = []
                     g = list(
                         _time_station["N{:0>3}".format(_demand[i])].keys())
-                    _label_station[i] = random.choice(g)
+                    _label_station[i] = np.random.choice(g)
             elif ["N{:0>3}".format(_demand[i])] in list(_od_flow.keys()):
                 if ["N{:0>3}".format(_demand[e])] in list(_od_flow["N{:0>3}".format(_demand[i])].keys()):
                     h = []
                     h = list(
                         _time_station["N{:0>3}".format(_demand[i])].keys())
-                    _label_station[i] = random.choice(h)
+                    _label_station[i] = np.random.choice(h)
 
 #    d=[]
 #    for i in _demand:
@@ -164,7 +160,7 @@ def cal_L3_remove_bike_station(_label_station, _station, _time_station, _demand)
         if _label_station[i] != 0:
             a.append(i)
     if len(a) != 0:
-        b = random.choice(a)
+        b = np.random.choice(a)
         _label_station[b] = 0
     return _label_station
 
@@ -187,11 +183,11 @@ def cal_L4_replace_bike_station(_label_station, _station, _time_station, _demand
                 if check_a[j] == 0:
                     d.append(j)
             if len(d) != 0:
-                b = random.choice(d)
+                b = np.random.choice(d)
                 check_a[b] = 1
                 if ["N{:0>3}".format(_demand[a[b]])] in list(_time_station.keys()):
                     if len(_time_station["N{:0>3}".format(_demand[a[b]])].keys()) != 1:
-                        c = random.choice(
+                        c = np.random.choice(
                             list(_time_station["N{:0>3}".format(_demand[a[b]])].keys()))
                         _label_station[b] = c
                         has_opt = True
@@ -280,7 +276,7 @@ def cal_HSS(LLH, SEQ, cumulative_pro_TM, TM, pro_TM, CHOICE, SM, pro_SM, cumulat
     """
     a random low level heuristic is selected and add to the sequence
     """
-    cur = random.randint(0, len(LLH)-1)
+    cur = np.random.randint(0, len(LLH)-1)
     SEQ.append(LLH[cur])
 
     # LLH(next) is chosen by a selection procedure based on the roulette wheel selection strategy
@@ -289,7 +285,7 @@ def cal_HSS(LLH, SEQ, cumulative_pro_TM, TM, pro_TM, CHOICE, SM, pro_SM, cumulat
     """
     a = 0
     b = 0
-    c = random.uniform(0, 1)
+    c = np.random.uniform(0, 1)
     for i in LLH:
         for j in LLH:
             cumulative_pro_TM[i][j] = 0
@@ -313,7 +309,7 @@ def cal_HSS(LLH, SEQ, cumulative_pro_TM, TM, pro_TM, CHOICE, SM, pro_SM, cumulat
     """
     # judge whether the sequence will terminate at this point
     a = 0
-    c = random.uniform(0, 1)
+    c = np.random.uniform(0, 1)
     for j in CHOICE:
         a += SM[cur][j]
     for j in CHOICE:
@@ -323,7 +319,7 @@ def cal_HSS(LLH, SEQ, cumulative_pro_TM, TM, pro_TM, CHOICE, SM, pro_SM, cumulat
     while cumulative_pro_SM[cur][CHOICE[0]] < c:
         a = 0
         b = 0
-        c = random.uniform(0, 1)
+        c = np.random.uniform(0, 1)
         for i in LLH:
             for j in LLH:
                 cumulative_pro_TM[i][j] = 0
@@ -341,7 +337,7 @@ def cal_HSS(LLH, SEQ, cumulative_pro_TM, TM, pro_TM, CHOICE, SM, pro_SM, cumulat
                 cur = j
                 break
         a = 0
-        c = random.uniform(0, 1)
+        c = np.random.uniform(0, 1)
         for j in CHOICE:
             a += SM[cur][j]
         for j in CHOICE:
@@ -422,7 +418,7 @@ def run_upper(Ex_ID):
 
     best_station = np.array(np.zeros((len(demand))), dtype=np.int)
     for i in range(len(demand)):
-        best_station[i] = random.choice(
+        best_station[i] = np.random.choice(
             list(time_station["N{:0>3}".format(demand[i])].keys()))
 #        z = random.random()
 #        if z> 0.5:
@@ -450,7 +446,7 @@ def run_upper(Ex_ID):
     start_time = time.time()
     sol_cost = np.array(np.zeros((Max_gen+1, 1)))
     while n < Max_gen:
-        #        print(n)
+        print("HH Generation = ",n)
         n += 1
         SEQ = []
         SEQ = cal_HSS(LLH, SEQ, cumulative_pro_TM, TM, pro_TM,
