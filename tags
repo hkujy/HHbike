@@ -1,0 +1,126 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+Ex_ID	.\enumeration.py	/^    Ex_ID = c$/;"	v
+FW_main	.\assignment\assign.py	/^def FW_main(network_a, network_b,od_info,od_flow,_label_lane,_label_station,time_station,UE_converge,sita,fy,demand):$/;"	f
+GA_main	.\GA_new.py	/^def GA_main(run_ex_ID):$/;"	f
+GA_main	.\main.py	/^from GA_new import GA_main$/;"	i
+Run_time	.\GA_new.py	/^Run_time =10$/;"	v
+Run_time	.\new.py	/^Run_time = 1$/;"	v
+SPP	.\assignment\assign.py	/^from assignment.shortest_path import ShortestPath as SPP$/;"	i
+ShortestPath	.\assignment\shortest_path.py	/^class ShortestPath:$/;"	c
+__cmp__	.\assignment\graph.py	/^    def __cmp__(self, other):$/;"	m	class:vertex_a	file:
+__cmp__	.\assignment\graph.py	/^    def __cmp__(self, other):$/;"	m	class:vertex_b	file:
+__eq__	.\assignment\graph.py	/^    def __eq__(self, other):$/;"	m	class:edge_a	file:
+__eq__	.\assignment\graph.py	/^    def __eq__(self, other):$/;"	m	class:edge_b	file:
+__init__	.\assignment\graph.py	/^    def __init__(self, edge_info):$/;"	m	class:edge_a
+__init__	.\assignment\graph.py	/^    def __init__(self, edge_info):$/;"	m	class:edge_b
+__init__	.\assignment\graph.py	/^    def __init__(self, netname):$/;"	m	class:network_a
+__init__	.\assignment\graph.py	/^    def __init__(self, netname):$/;"	m	class:network_b
+__init__	.\assignment\graph.py	/^    def __init__(self, node_id):$/;"	m	class:vertex_a
+__init__	.\assignment\graph.py	/^    def __init__(self, node_id):$/;"	m	class:vertex_b
+__init__	.\assignment\shortest_path.py	/^    def __init__(self, name):$/;"	m	class:ShortestPath
+a	.\enumeration.py	/^a=[]$/;"	v
+add_edge	.\assignment\graph.py	/^    def add_edge(self, edge):$/;"	m	class:network_a
+add_edge	.\assignment\graph.py	/^    def add_edge(self, edge):$/;"	m	class:network_b
+assignment	.\GA_new.py	/^import assignment$/;"	i
+assignment	.\enumeration.py	/^import assignment$/;"	i
+assignment	.\new.py	/^import assignment$/;"	i
+cal_HSS	.\new.py	/^def cal_HSS(LLH, SEQ, cumulative_pro_TM, TM, pro_TM, CHOICE, SM, pro_SM, cumulative_pro_SM):$/;"	f
+cal_L0_add_bike_link	.\new.py	/^def cal_L0_add_bike_link(_label_lane, _lane):$/;"	f
+cal_L1_remove_bike_link	.\new.py	/^def cal_L1_remove_bike_link(_label_lane, _lane):$/;"	f
+cal_L2_add_bike_station	.\new.py	/^def cal_L2_add_bike_station(_label_station, _station, _time_station, _demand, _od_flow):$/;"	f
+cal_L3_remove_bike_station	.\new.py	/^def cal_L3_remove_bike_station(_label_station, _station, _time_station, _demand):$/;"	f
+cal_L4_replace_bike_station	.\new.py	/^def cal_L4_replace_bike_station(_label_station, _station, _time_station, _demand):$/;"	f
+cal_apply	.\new.py	/^def cal_apply(_uSEQ, _ulabel_lane, _ulane, _ulabel_station, _ustation, _utime_station, _udemand, _uod_flow):$/;"	f
+cal_limit	.\assignment\line.py	/^def cal_limit(prior_a, posterior_a,prior_b, posterior_b):$/;"	f
+cal_new_cost	.\GA_new.py	/^def cal_new_cost(label_station,label_lane,cost_station,cost_lane,lane,time_station,Budget,od_info,od_flow,nt_a,nt_b,UE_converge,sita,fy,demand):$/;"	f
+cal_new_cost	.\enumeration.py	/^def cal_new_cost(_label_station,_label_lane,_cost_station,_cost_lane,_lane,time_station,Budget,od_info,od_flow,nt_a,nt_b,UE_converge,sita,fy,demand):$/;"	f
+cal_new_cost	.\new.py	/^def cal_new_cost(_label_station, _label_lane, _cost_station, _cost_lane, _lane, time_station, Budget, od_info, od_flow, nt_a, nt_b, UE_converge, sita, fy, demand):$/;"	f
+cal_step	.\assignment\line.py	/^def cal_step(net_a, net_b, prior_a,prior_b, posterior_a, posterior_b,od_info,od_flow,od_flow_b,v_b,timecost_b,_ulabel_lane,per_b,sita,fy):$/;"	f
+cal_timecost	.\assignment\assign.py	/^def cal_timecost(_network_a,_network_b,_va_x,_vb_x,_lab_lane,walk_time):$/;"	f
+cal_weight1	.\assignment\graph.py	/^    def cal_weight1(self,volume1,volume2,_label_lane):$/;"	m	class:edge_a
+cal_weight2	.\assignment\graph.py	/^    def cal_weight2(self,volume1, volume2,_label_lane):$/;"	m	class:edge_b
+copy	.\GA_new.py	/^import copy$/;"	i
+copy	.\enumeration.py	/^import copy$/;"	i
+copy	.\new.py	/^import copy$/;"	i
+crossover	.\GA_new.py	/^def crossover(Group, couples, cross_p,lane,demand):  # cross_p为交叉概率$/;"	f
+csv	.\GA_new.py	/^import csv$/;"	i
+csv	.\enumeration.py	/^import csv$/;"	i
+csv	.\new.py	/^import csv$/;"	i
+data	.\GA_new.py	/^data=import_data.import_data()$/;"	v
+data	.\enumeration.py	/^data=import_data.import_data()$/;"	v
+data	.\new.py	/^data = import_data.import_data()$/;"	v
+deepcopy	.\assignment\assign.py	/^from copy import deepcopy$/;"	i
+deepcopy	.\assignment\line.py	/^from copy import deepcopy$/;"	i
+dijkstra	.\assignment\shortest_path.py	/^    def dijkstra(net, source, sink):$/;"	m	class:ShortestPath
+div	.\assignment\line.py	/^def div(net_a, net_b, prior_a,prior_b, posterior_a, posterior_b,od_info,od_flow,od_flow_b,v_b,step,timecost_b,_ulabel_lane,per_b,sita,fy):$/;"	f
+edge_a	.\assignment\graph.py	/^class edge_a:$/;"	c
+edge_b	.\assignment\graph.py	/^class edge_b:$/;"	c
+enumeration	.\enumeration.py	/^def enumeration ():    $/;"	f
+f	.\enumeration.py	/^f = open('solution.csv','w',newline='')$/;"	v
+father_pair	.\GA_new.py	/^def father_pair(Pop_size):  $/;"	f
+find_y_flow	.\assignment\assign.py	/^def find_y_flow(_net_a,_net_b,od_info,od_flow,od_flow_a,od_flow_b,_label_station,per_b,sita,fy):$/;"	f
+ganew	.\main.py	/^import GA_new as ganew$/;"	i
+heapq	.\assignment\shortest_path.py	/^import heapq$/;"	i
+hh_main	.\main.py	/^from new import hh_main$/;"	i
+hh_main	.\new.py	/^def hh_main(run_ex_ID):$/;"	f
+import_data	.\GA_new.py	/^import import_data $/;"	i
+import_data	.\enumeration.py	/^import import_data $/;"	i
+import_data	.\import_data.py	/^class import_data():   $/;"	c
+import_data	.\new.py	/^import import_data$/;"	i
+init_cost1	.\assignment\graph.py	/^    def init_cost1(self,_label_lane,No_edge):$/;"	m	class:network_a
+init_cost2	.\assignment\graph.py	/^    def init_cost2(self,_label_lane,No_edge):$/;"	m	class:network_b
+initialization	.\assignment\assign.py	/^def initialization(_net_a,_net_b,od_info,od_flow,_label_lane,_label_station,demand):$/;"	f
+label_lane	.\enumeration.py	/^    label_lane=np.array(np.zeros((6)),dtype=np.int)$/;"	v
+label_station	.\enumeration.py	/^    label_station = np.array(np.zeros((3)),dtype=np.int)$/;"	v
+math	.\GA_new.py	/^import math$/;"	i
+math	.\assignment\assign.py	/^import math$/;"	i
+math	.\assignment\line.py	/^import math$/;"	i
+mutation	.\GA_new.py	/^def mutation(Group,mut_p,lane,cost_station,cost_lane,time_station,Budget,od_info,od_flow,nt_a,nt_b,UE_converge,sita,fy,demand):$/;"	f
+network_a	.\assignment\graph.py	/^class network_a:$/;"	c
+network_b	.\assignment\graph.py	/^class network_b:$/;"	c
+new	.\main.py	/^import new as new$/;"	i
+next_pop	.\GA_new.py	/^def next_pop(Father_Group,Child_Group, lane, station, cost_station,cost_lane):$/;"	f
+np	.\GA_new.py	/^import numpy as np$/;"	i
+np	.\assignment\graph.py	/^import numpy as np$/;"	i
+np	.\enumeration.py	/^import numpy as np$/;"	i
+np	.\import_data.py	/^import numpy as np$/;"	i
+np	.\new.py	/^import numpy as np$/;"	i
+population	.\GA_new.py	/^def population(Pop_size,lane,demand,time_station):$/;"	f
+random	.\GA_new.py	/^import random$/;"	i
+random	.\enumeration.py	/^import random$/;"	i
+random	.\main.py	/^from random import random$/;"	i
+random	.\new.py	/^import random$/;"	i
+rdm	.\main.py	/^import random as rdm$/;"	i
+read_network_auto	.\import_data.py	/^    def read_network_auto(self,nt_a,_label_lane,No_edge):$/;"	m	class:import_data
+read_network_bike	.\import_data.py	/^    def read_network_bike(self,nt_b,_label_lane,No_edge):$/;"	m	class:import_data
+read_od	.\import_data.py	/^    def read_od(self,case_ID,demand_ID):$/;"	m	class:import_data
+result	.\enumeration.py	/^            result = ["{0}{1}".format("Ex ",Ex_ID),best_cost,fixcost,(best_cost-fixcost)\/20000,label_lane,label_station,FW_time] $/;"	v
+result	.\enumeration.py	/^            result = []$/;"	v
+result1	.\enumeration.py	/^            result1 = copy.deepcopy(result)$/;"	v
+run_ex_ID	.\enumeration.py	/^run_ex_ID = [12,13]$/;"	v
+run_ga	.\GA_new.py	/^def run_ga (Ex_ID):$/;"	f
+run_upper	.\new.py	/^def run_upper(Ex_ID):$/;"	f
+set_Ex_ID	.\enumeration.py	/^def set_Ex_ID(Ex_ID):  $/;"	f
+set_Ex_ID	.\set_exp_id.py	/^def set_Ex_ID(Ex_ID,_alg=""):$/;"	f
+set_network	.\import_data.py	/^    def set_network(self,case_ID):$/;"	m	class:import_data
+set_prob	.\import_data.py	/^    def set_prob(self):     $/;"	m	class:import_data
+set_sta_lane	.\import_data.py	/^    def set_sta_lane(self,case_ID):$/;"	m	class:import_data
+sid	.\GA_new.py	/^import set_Ex_ID as sid$/;"	i
+sid	.\new.py	/^import set_exp_id as sid$/;"	i
+sys	.\main.py	/^import sys$/;"	i
+time	.\GA_new.py	/^import time$/;"	i
+time	.\enumeration.py	/^import time$/;"	i
+time	.\new.py	/^import time$/;"	i
+update_cost1	.\assignment\graph.py	/^    def update_cost1(self,volume1,volume2,_label_lane,No_edge):$/;"	m	class:network_a
+update_cost2	.\assignment\graph.py	/^    def update_cost2(self,volume1,volume2,_label_lane,No_edge):$/;"	m	class:network_b
+update_net_cost	.\assignment\assign.py	/^def update_net_cost(_net_a,_net_b,_va,_vb,_label,No_edge):$/;"	f
+vertex_a	.\assignment\graph.py	/^class vertex_a:$/;"	c
+vertex_b	.\assignment\graph.py	/^class vertex_b:$/;"	c
+writer	.\enumeration.py	/^writer = csv.writer(f)$/;"	v
+xlrd	.\enumeration.py	/^import xlrd$/;"	i
+xlrd	.\import_data.py	/^import xlrd$/;"	i

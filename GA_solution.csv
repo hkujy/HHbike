@@ -1,0 +1,2 @@
+Ex_ID,Best_cost,Constr_cost,Travel_time,Best_lane,Best_station,Best_iter,CPU_time,FW_time
+Ex 8,271269216,59000,13560.5108,[0. 0. 1. 0. 1. 1.],[1. 2. 3.],6,2.8964757919311523,2.8565032482147217
