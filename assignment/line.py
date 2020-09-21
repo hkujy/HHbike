@@ -1,5 +1,4 @@
 import math
-#import assignment.globalpara as gl
 from copy import deepcopy
 
 

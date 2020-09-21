@@ -5,7 +5,7 @@ Created on Fri Sep 18 17:33:58 2020
 @author: Cheng Rong
 """
 import numpy as np
-import xlrd
+# import xlrd
 import import_data 
 data=import_data.import_data()
 import assignment
@@ -19,25 +19,27 @@ import csv
 
 
 
-def enumeration ():    
-    book = xlrd.open_workbook("enumeration.xlsx")  
-    table1 = book.sheet_by_name("lane")
-    table2 = book.sheet_by_name("station")
-    row_Num1 = table1.nrows
-    col_Num1 = table1.ncols
-    row_Num2 = table2.nrows
-    col_Num2 = table2.ncols
-    lane = np.array(np.zeros((row_Num1,col_Num1)),dtype=np.int)
-    station = np.array(np.zeros((row_Num2,col_Num2)),dtype=np.int)
+# def enumeration ():    
+#     input("Check enumeration line 23")
+#     book
+#     # book = xlrd.open_workbook("enumeration.xlsx")  
+#     table1 = book.sheet_by_name("lane")
+#     table2 = book.sheet_by_name("station")
+#     row_Num1 = table1.nrows
+#     col_Num1 = table1.ncols
+#     row_Num2 = table2.nrows
+#     col_Num2 = table2.ncols
+#     lane = np.array(np.zeros((row_Num1,col_Num1)),dtype=np.int)
+#     station = np.array(np.zeros((row_Num2,col_Num2)),dtype=np.int)
     
-    for i in range(row_Num1):
-        for j in range(col_Num1):
-            lane[i,j] = int(table1.cell(i,j).value)
-    for i in range(row_Num2):
-        for j in range(col_Num2):
-            station[i,j] = int(table2.cell(i,j).value)
-#    print(lane,station)
-    return lane,station
+#     for i in range(row_Num1):
+#         for j in range(col_Num1):
+#             lane[i,j] = int(table1.cell(i,j).value)
+#     for i in range(row_Num2):
+#         for j in range(col_Num2):
+#             station[i,j] = int(table2.cell(i,j).value)
+# #    print(lane,station)
+#     return lane,station
 
 def cal_new_cost(_label_station,_label_lane,_cost_station,_cost_lane,_lane,time_station,Budget,od_info,od_flow,nt_a,nt_b,UE_converge,sita,fy,demand):
     fixed_cost=0
