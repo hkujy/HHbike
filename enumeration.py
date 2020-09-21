@@ -36,7 +36,7 @@ def enumeration ():
     for i in range(row_Num2):
         for j in range(col_Num2):
             station[i,j] = int(table2.cell(i,j).value)
-    print(lane,station)
+#    print(lane,station)
     return lane,station
 
 def cal_new_cost(_label_station,_label_lane,_cost_station,_cost_lane,_lane,time_station,Budget,od_info,od_flow,nt_a,nt_b,UE_converge,sita,fy,demand):
@@ -60,7 +60,7 @@ def cal_new_cost(_label_station,_label_lane,_cost_station,_cost_lane,_lane,time_
         nt_b = data.read_network_bike(nt_b,_label_lane,No_edge)
         star_FW=time.time()
 #        print("lane=",_label_lane,"station=",_label_station)
-        vol_a,vol_b,time_cost = assignment.assign.FW_main(nt_a,nt_b,od_info,od_flow,_label_lane,_label_station,time_station,UE_converge,sita,fy,demand)
+        vol_a,vol_b,time_cost, od_flow_bike = assignment.assign.FW_main(nt_a,nt_b,od_info,od_flow,_label_lane,_label_station,time_station,UE_converge,sita,fy,demand)
         end_FW=time.time()
         once_FW_time = end_FW-star_FW
 #        print("fw time=", end_FW-star_FW)
@@ -73,7 +73,7 @@ def cal_new_cost(_label_station,_label_lane,_cost_station,_cost_lane,_lane,time_
 #            print("{0},{1}".format(link,vol_b[link]))
 
         _new_cost=time_cost+fixed_cost
-    return _new_cost,fixed_cost,once_FW_time
+    return _new_cost,fixed_cost,once_FW_time, od_flow_bike
 
 
 def set_Ex_ID(Ex_ID):  
@@ -142,7 +142,7 @@ def set_Ex_ID(Ex_ID):
         Max_gen = 1
 
         
-    if Ex_ID == 12:                # Five node - Med demand   - 10
+    if Ex_ID == 12:                # Five node - Med demand   - 0.1
         case_ID=0
         demand_ID=1
         Budget=10000000000
@@ -166,6 +166,31 @@ def set_Ex_ID(Ex_ID):
         
         Max_gen = 1    
     
+    
+    
+    if Ex_ID == 14:                # Five node - Low demand   - 0.1
+        case_ID=0
+        demand_ID=0
+        Budget=10000000000
+        
+        fy = 2.5
+        sita = 0.1
+        UE_converge = 0.001
+        isOutPutDetail = True    
+        
+        Max_gen = 1    
+    
+    if Ex_ID == 15:                # Five node - Low demand   - 10
+        case_ID=0
+        demand_ID=0
+        Budget=10000000000
+        
+        fy = 2.5
+        sita = 10
+        UE_converge = 0.001
+        isOutPutDetail = True    
+        
+        Max_gen = 1    
         
     
         
@@ -192,7 +217,8 @@ def set_Ex_ID(Ex_ID):
 
   
 a=[]
-run_ex_ID = [12,13]
+enum_time = []
+run_ex_ID = [7,8,9,10,11,12,13,14,15]
 for c in run_ex_ID:
     Ex_ID = c
     print("Ex_ID",Ex_ID)
@@ -204,7 +230,7 @@ for c in run_ex_ID:
 
     label_lane=np.array(np.zeros((6)),dtype=np.int)
     label_station = np.array(np.zeros((3)),dtype=np.int)
-#    result=[]
+    start_time = time.time()
     for i in range(len(lane_set)):
         for j in range(len(station_set)):
 #            print(i,j)
@@ -214,16 +240,18 @@ for c in run_ex_ID:
                 label_station[n] = station_set [j,n]
 #            c_label_lane = copy.deepcopy(label_lane)
 #            c_label_station = copy.deepcopy(label_station)
-            best_cost,fixcost,FW_time = cal_new_cost(label_station,label_lane,cost_station,cost_lane,lane,time_station,Budget,od_info,od_flow,nt_a,nt_b,UE_converge,sita,fy,demand)          
+            best_cost,fixcost,FW_time, od_bike = cal_new_cost(label_station,label_lane,cost_station,cost_lane,lane,time_station,Budget,od_info,od_flow,nt_a,nt_b,UE_converge,sita,fy,demand)          
             result = []
-            result = ["{0}{1}".format("Ex ",Ex_ID),best_cost,fixcost,(best_cost-fixcost)/20000,label_lane,label_station,FW_time] 
+            result = ["{0}{1}".format("Ex ",Ex_ID),best_cost,fixcost,(best_cost-fixcost)/20000,label_lane,label_station,FW_time,od_bike] 
             result1 = copy.deepcopy(result)
 #           result = ["{0}{1}".format("Ex ",Ex_ID),best_cost,fixcost,(best_cost-fixcost)/20000,lane_set[i],station_set[j],FW_time] 
             a.append(result1)
-        
+    end_time = time.time()
+    enum_time.append(end_time-start_time)
 f = open('solution.csv','w',newline='')
 writer = csv.writer(f)
-writer.writerow(["Ex_ID","Best_cost","Constr_cost","Travel_time","Best_lane","Best_station","FW_time"])
+writer.writerow(["Ex_ID","Best_cost","Constr_cost","Travel_time","Best_lane","Best_station","FW_time","Bike_flow"])
 for i in range(len(a)):
     writer.writerow(a[i])
+writer.writerow([enum_time])
 f.close()

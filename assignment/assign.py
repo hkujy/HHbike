@@ -301,7 +301,7 @@ def FW_main(network_a, network_b,od_info,od_flow,_label_lane,_label_station,time
     
     time_cost=cal_timecost(network_a,network_b,va_x,vb_x,_label_lane,walk_time)
     time_cost*=20000
-    return va_x,vb_x,time_cost
+    return va_x,vb_x,time_cost,od_flow_b
 def cal_timecost(_network_a,_network_b,_va_x,_vb_x,_lab_lane,walk_time):
     _time_cost=walk_time
     a=0

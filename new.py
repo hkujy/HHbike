@@ -40,7 +40,7 @@ def cal_new_cost(_label_station, _label_lane, _cost_station, _cost_lane, _lane, 
         nt_b = data.read_network_bike(nt_b, _label_lane, No_edge)
         star_FW = time.time()
 #        print("lane=",_label_lane,"station=",_label_station)
-        vol_a, vol_b, time_cost = assignment.assign.FW_main(
+        vol_a, vol_b, time_cost,od_flow_bike = assignment.assign.FW_main(
             nt_a, nt_b, od_info, od_flow, _label_lane, _label_station, time_station, UE_converge, sita, fy, demand)
         end_FW = time.time()
         once_FW_time = end_FW-star_FW
@@ -54,7 +54,7 @@ def cal_new_cost(_label_station, _label_lane, _cost_station, _cost_lane, _lane, 
 #            print("{0},{1}".format(link,vol_b[link]))
 
         _new_cost = time_cost+fixed_cost
-    return _new_cost, fixed_cost, once_FW_time
+    return _new_cost, fixed_cost, once_FW_time,od_flow_bike
 
 
 # Step 1: Low level heuristics
@@ -417,9 +417,9 @@ def run_upper(Ex_ID):
 #        best_lane[i] = 1
 
     best_station = np.array(np.zeros((len(demand))), dtype=np.int)
-    for i in range(len(demand)):
-        best_station[i] = np.random.choice(
-            list(time_station["N{:0>3}".format(demand[i])].keys()))
+#    for i in range(len(demand)):
+#        best_station[i] = np.random.choice(
+#            list(time_station["N{:0>3}".format(demand[i])].keys()))
 #        z = random.random()
 #        if z> 0.5:
 #            best_station[i] = random.choice(list(time_station["N{:0>3}".format(demand[i])].keys()))
@@ -469,7 +469,7 @@ def run_upper(Ex_ID):
                                               _ustation=station, _utime_station=time_station, _udemand=demand, _uod_flow=od_flow)
 #        print("station= ", label_station)
         # Acceptence method:Only Improve
-        new_cost, newfixcost, o_FW_time = cal_new_cost(
+        new_cost, newfixcost, o_FW_time, od_bike = cal_new_cost(
             label_station, label_lane, cost_station, cost_lane, lane, time_station, Budget, od_info, od_flow, nt_a, nt_b, UE_converge, sita, fy, demand)
         FW_time = FW_time + o_FW_time
         sol_cost[n, 0] = copy.copy(new_cost)
@@ -521,10 +521,10 @@ def run_upper(Ex_ID):
 
     end_time = time.time()
     cal_time = end_time-start_time
-    best_cost, fixcost, on_FW_time = cal_new_cost(best_station, best_lane, cost_station, cost_lane,
+    best_cost, fixcost, on_FW_time, bike_flow = cal_new_cost(best_station, best_lane, cost_station, cost_lane,
                                                   lane, time_station, Budget, od_info, od_flow, nt_a, nt_b, UE_converge, sita, fy, demand)
     result = ["{0}{1}".format("Ex ", Ex_ID), best_cost, fixcost, (best_cost-fixcost)/20000,
-              best_lane, best_station, best_iter, cal_time, TM, SM, No_0, No_1, No_2, No_3, No_4, FW_time]
+              best_lane, best_station, best_iter, cal_time, TM, SM, No_0, No_1, No_2, No_3, No_4, FW_time,bike_flow]
 
 
 #    print('best_iter=',best_iter)
@@ -541,9 +541,19 @@ def run_upper(Ex_ID):
 #    test_lane = np.array(np.zeros((76)))
 #    for i in range(76):
 #        test_lane[i] = 1
+#        if i in [7,15,18,28,29,30,33,39,47,48,51,52,57,70]:
+#            test_lane[i] = 0
 #    test_station=np.array(np.zeros((24)))
-#    test_station = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24]
-#    test_cost,test_fixcost =cal_new_cost(test_station,test_lane,cost_station,cost_lane,lane,time_station,Budget,od_info,od_flow,nt_a,nt_b,UE_converge,sita,fy,demand)
+#    test_station = [0,2,0,4,0,6,7,26,9,10,11,12,13,14,15,16,28,18,29,20,21,22,0,31]
+#   2.28,9
+     
+#    for i in range(76):
+#        if i in [3,15,18,21,23,32,38,46,49,58,60,68,71,72,74]:
+#            test_lane[i] = 1
+#    test_station=np.array(np.zeros((24)))
+#    test_station = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,29,18,19,20,30,22,0,31]
+#    
+#    test_cost,test_fixcost,test_time =cal_new_cost(test_station,test_lane,cost_station,cost_lane,lane,time_station,Budget,od_info,od_flow,nt_a,nt_b,UE_converge,sita,fy,demand)
 #    print("Test11",test_cost,test_fixcost,((test_cost-test_fixcost)/20000),test_lane,test_station)
 
     return result

@@ -5,17 +5,16 @@ import csv
 import sys
 import new as hh
 import numpy as np
+import copy
 
 
 def run_test(run_ex_ID, Run_time,_alg=""):
     a = []
+    s = []
     for c in run_ex_ID:
+        s1 = []
         Ex_ID = c
         print("************"+_alg+":Ex_ID = "+str(Ex_ID)+"*****************")
-    #    # 1. 创建文件对象
-    #    f = open('"{0}{1}".format("Ex ",Ex_ID).csv','w',newline='')
-    #    writer = csv.writer(f)
-    #    worksheet = workbook.add_worksheet("{0}{1}".format("Ex ",Ex_ID))   #work.add_worksheet('employee')
         for run_time in range(Run_time):
             """
             # 1. the number in the random seed brace can be set arbitrable 
@@ -29,11 +28,45 @@ def run_test(run_ex_ID, Run_time,_alg=""):
             if _alg is "GA":
                 result = ga.run_ga(Ex_ID)
                 a.append(result)
+                s1.append(result)
             elif _alg is "HH":
                 result = hh.run_upper(Ex_ID)
                 a.append(result)
+                s1.append(result)
             else:
                 print("Warning")
+                
+                
+                
+        cpu_time = []
+        fw_time = []
+        best_cost = []
+        for i in s1:            
+            if _alg is "GA":
+                cpu_time.append(i[7])
+                fw_time.append(i[8])
+                best_cost.append(i[1])
+            elif _alg is "HH":
+                cpu_time.append(i[7])
+                fw_time.append(i[15])
+                best_cost.append(i[1])
+        ave_cpu = np.mean(cpu_time)
+        ave_FW = np.mean(fw_time)
+        ave_cost = np.mean(best_cost)
+        min_cost = np.min(best_cost)
+        p = ["{0}{1}".format("Ex ", Ex_ID),min_cost,ave_cost,ave_cpu,ave_FW]
+        s.append(p)
+        
+    f1 = open(_alg+'_summary.csv', 'w', newline='')
+    writer1 = csv.writer(f1)
+    writer1.writerow(["Ex_ID","Best_cost","Ave_cost","ave_cpu","ave_FW"])
+    for i in range(len(s)):
+        writer1.writerow(s[i])
+        
+    
+    
+    
+    
     
     f = open(_alg+'_solution.csv', 'w', newline='')
     writer = csv.writer(f)
@@ -57,24 +90,24 @@ if __name__ == "__main__":
 
     # hh.hh_main(run_ex_ID=[7, 8, 9])
     # ga.GA_main(run_ex_ID=[4])
-    res_ga = run_test(run_ex_ID=[5],Run_time=1,_alg="GA")
-    res_hh = run_test(run_ex_ID=[5],Run_time=1,_alg="HH")
+    res_ga = run_test(run_ex_ID=[1,2,3,4,5,6,7,8,9],Run_time=10,_alg="GA")
+    res_hh = run_test(run_ex_ID=[1,2,3,4,5,6,7,8,9],Run_time=10,_alg="HH")
     # print(res_ga)
     # print(res_hh)
     # sys.exit()
 
-    best_cost_hh = []
-    best_cost_ga = []
-    for i in res_hh:
-        best_cost_hh.append(i[1])
-    for i in res_ga:
-        best_cost_ga.append(i[1])
-
-    """
-    you can write more information in the summary txt
-    """
-    with open("Summary.txt","w") as f:
-        print("AveHH:{0:.2f},Best:{1:.2f}".format(np.mean(best_cost_hh),np.min(best_cost_hh)))
-        print("AveGA:{0:.2f},Best:{1:.2f}".format(np.mean(best_cost_ga),np.min(best_cost_ga)))
-        print("AveHH:{0:.2f},Best:{1:.2f}".format(np.mean(best_cost_hh),np.min(best_cost_hh)),file=f)
-        print("AveGA:{0:.2f},Best:{1:.2f}".format(np.mean(best_cost_ga),np.min(best_cost_ga)),file=f)
+#    best_cost_hh = []
+#    best_cost_ga = []
+#    for i in res_hh:
+#        best_cost_hh.append(i[1])
+##    for i in res_ga:
+##        best_cost_ga.append(i[1])
+#
+#    """
+#    you can write more information in the summary txt
+#    """
+#    with open("Summary.txt","w") as f:
+#        print("AveHH:{0:.2f},Best:{1:.2f}".format(np.mean(best_cost_hh),np.min(best_cost_hh)))
+#        print("AveGA:{0:.2f},Best:{1:.2f}".format(np.mean(best_cost_ga),np.min(best_cost_ga)))
+#        print("AveHH:{0:.2f},Best:{1:.2f}".format(np.mean(best_cost_hh),np.min(best_cost_hh)),file=f)
+#        print("AveGA:{0:.2f},Best:{1:.2f}".format(np.mean(best_cost_ga),np.min(best_cost_ga)),file=f)

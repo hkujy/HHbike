@@ -13,60 +13,81 @@ read excel and create dict like this:
 '''
 
 
-
-
-import xlrd
 import numpy as np
 from assignment.assign import *
 from assignment.line import *
 from assignment.graph import *
 class import_data():
 
-    def read_od(self, case_ID, demand_ID):
-        if case_ID == 0:
-            xlsx_name = "small.xlsx"
-        if case_ID == 1:
-            xlsx_name = "ND.xlsx"
-        if case_ID == 2:
-            xlsx_name = "SF.xlsx"
-
-        if demand_ID == 0:
-            xls_sheet = "low_demand"
-        if demand_ID == 1:
-            xls_sheet = "med_demand"
-        if demand_ID == 2:
-            xls_sheet = "high_demand"
-        book = xlrd.open_workbook(xlsx_name)
-        table = book.sheet_by_name(xls_sheet)
-        row_Num = table.nrows
-        col_Num = table.ncols
+    def read_od(self, case_ID, demand_ID):    
+        
         od_info = []
-        for i in range(row_Num):
-            a = table.row_values(i)
+        if case_ID == 0 and demand_ID == 0:
+            with open('Small_Low_demand.csv', 'r') as fo:
+                lines = fo.readlines()
+        
+        if case_ID == 0 and demand_ID == 1:
+            with open('Small_Med_demand.csv', 'r') as fo:
+                lines = fo.readlines()
+        
+        if case_ID == 0 and demand_ID == 2:
+            with open('Small_High_demand.csv', 'r') as fo:
+                lines = fo.readlines()
+        
+        if case_ID == 1 and demand_ID == 0:
+            with open('ND_Low_demand.csv', 'r') as fo:
+                lines = fo.readlines()
+                
+        if case_ID == 1 and demand_ID == 1:
+            with open('ND_Med_demand.csv', 'r') as fo:
+                lines = fo.readlines()
+                
+        if case_ID == 1 and demand_ID == 2:
+            with open('ND_High_demand.csv', 'r') as fo:
+                lines = fo.readlines()
+                
+        if case_ID == 2 and demand_ID == 0:
+            with open('SF_Low_demand.csv', 'r') as fo:
+                lines = fo.readlines()
+                
+        if case_ID == 2 and demand_ID == 1:
+            with open('SF_Med_demand.csv', 'r') as fo:
+                lines = fo.readlines()
+                
+        if case_ID == 2 and demand_ID == 2:
+            with open('SF_High_demand.csv', 'r') as fo:
+                lines = fo.readlines()    
+    
+        for ln in lines:
+            a = ln.split(',')
             od_info.append(a)
         for i in range(len(od_info)):
             od_info[i][2] = int(od_info[i][2])
-
+        
+#        print("od_info",type(od_info),od_info,od_info[0][1])
         od_demand = {}
         key1 = {}
         a = {}
-        for i in range(row_Num):
-            key1[i] = table.cell(i, 0).value
-        cur_origin = table.cell(0, 0).value
-        for i in range(row_Num):
-            key1[i] = table.cell(i, 0).value
+        for i in range(len(od_info)):
+            key1[i] = od_info[i][0]
+        cur_origin = od_info[0][0]
+        for i in range(len(od_info)):
+            key1[i] = od_info[i][0]
             if key1[i] == cur_origin:
-                key2 = table.cell(i, 1).value
-                a[key2] = int(table.cell(i, 2).value)
+                key2 = od_info[i][1]
+                a[key2] = int(od_info[i][2])
                 od_demand[key1[i]] = a
             else:
                 a = {}
                 key2 = {}
-                cur_origin = table.cell(i, 0).value
-                key2 = table.cell(i, 1).value
-                a[key2] = int(table.cell(i, 2).value)
-                od_demand[key1[i]] = a
-        return od_info, od_demand
+                cur_origin = od_info[i][0]
+                key2 = od_info[i][1]
+                a[key2] = int(od_info[i][2])
+                od_demand[key1[i]] = a           
+#        print("od_demand",od_demand,type(od_demand),od_demand["N001"]["N003"])
+        return od_info,od_demand
+        
+
 
     def set_network(self, case_ID):
         nt_a = network_a('net_a')
@@ -114,52 +135,106 @@ class import_data():
         return nt_a, nt_b
 
     def set_sta_lane(self, case_ID):
+        
+        list_cost_lane = []
+        list_cost_station = []
+        list_time_station = []
+        list_demand_point = []
+        
+        od_info = []
         if case_ID == 0:
-            xlsx_name = "Small.xlsx"
+            with open('Small_Lane_cost.csv', 'r') as fo1:
+                lines1 = fo1.readlines()
+            with open('Small_Station_cost.csv', 'r') as fo2:
+                lines2 = fo2.readlines()
+            with open('Small_Time_station.csv', 'r') as fo3:
+                lines3 = fo3.readlines()
+            with open('Small_Demand_point.csv', 'r') as fo4:
+                lines4 = fo4.readlines()
+                
         if case_ID == 1:
-            xlsx_name = "ND.xlsx"
+            with open('ND_Lane_cost.csv', 'r') as fo1:
+                lines1 = fo1.readlines()
+            with open('ND_Station_cost.csv', 'r') as fo2:
+                lines2 = fo2.readlines()
+            with open('ND_Time_station.csv', 'r') as fo3:
+                lines3 = fo3.readlines()
+            with open('ND_Demand_point.csv', 'r') as fo4:
+                lines4 = fo4.readlines()
+        
         if case_ID == 2:
-            xlsx_name = "SF.xlsx"
-        book = xlrd.open_workbook(xlsx_name)
-        tab_lane = book.sheet_by_name("lane_cost")
-        tab_station = book.sheet_by_name("station_cost")
-        tab_time_station = book.sheet_by_name("time_station")
-        tab_demand_point = book.sheet_by_name("demand_point")
-        row_Num1 = tab_lane.nrows
-        col_Num1 = tab_lane.ncols
-        row_Num2 = tab_station.nrows
-        col_Num2 = tab_station.ncols
-        row_Num3 = tab_time_station.nrows
-        col_Num3 = tab_time_station.ncols
-        lane = range(0, row_Num1)
-        station = range(0, row_Num2)
-        demand_point = np.array(tab_demand_point.col_values(0), dtype=np.int)
-        cost_lane = tab_lane.col_values(0)
-        cost_station = tab_station.col_values(0)
+            with open('SF_Lane_cost.csv', 'r') as fo1:
+                lines1 = fo1.readlines()
+            with open('SF_Station_cost.csv', 'r') as fo2:
+                lines2 = fo2.readlines()
+            with open('SF_Time_station.csv', 'r') as fo3:
+                lines3 = fo3.readlines()
+            with open('SF_Demand_point.csv', 'r') as fo4:
+                lines4 = fo4.readlines()
+        
+        
+        
+        
+        for ln in lines1:
+            a = ln.split(',')
+            list_cost_lane.append(a)
+        
+        for ln in lines2:
+            a = ln.split(',')
+            list_cost_station.append(a)
+            
+        for ln in lines3:
+            a = ln.split(',')
+            list_time_station.append(a)
+        
+        for ln in lines4:
+            a = ln.split(',')
+            list_demand_point.append(a)  
+        
+        
+        
+        
+        
+        
+        lane = range(0, len(list_cost_lane))
+        station = range(0, len(list_cost_station))
+        demand_point = np.array(np.zeros((len(list_demand_point))),dtype=np.int)
+        for i in range (len(list_demand_point)):
+            demand_point[i] = int(list_demand_point[i][0])
+        cost_lane = np.array(np.zeros((len(list_cost_lane))), dtype=np.int)
+        for i in range(len(list_cost_lane)):
+            cost_lane[i] = int(list_cost_lane[i][0])
+        cost_station = np.array(np.zeros((len(list_cost_station))),dtype=np.int)
+        for i in range(len(list_cost_station)):
+            cost_station[i] = int(list_cost_station[i][0])
+        
+       
 
-        od_sta_info = []
-        for i in range(row_Num3):
-            a = tab_time_station.row_values(i)
-            od_sta_info.append(a)
+#        od_sta_info = []
+#        for i in range(len(list_time_station)):
+#            a = list_time_station[i]
+#            od_sta_info.append(a)
         time_station = {}
         key1 = {}
         a = {}
-        for i in range(row_Num3):
-            key1[i] = tab_time_station.cell(i, 0).value
-        cur_origin = tab_time_station.cell(0, 0).value
-        for i in range(row_Num3):
-            key1[i] = tab_time_station.cell(i, 0).value
+        for i in range(len(list_time_station)):
+            key1[i] = list_time_station[i][0]
+        cur_origin = list_time_station[0][0]
+        for i in range(len(list_time_station)):
+            key1[i] = list_time_station[i][0]
             if key1[i] == cur_origin:
-                key2 = int(tab_time_station.cell(i, 1).value)
-                a[key2] = tab_time_station.cell(i, 2).value
+                key2 = int(list_time_station[i][1])
+                a[key2] = float(list_time_station[i][2])
                 time_station[key1[i]] = a
             else:
                 a = {}
                 key2 = {}
-                cur_origin = tab_time_station.cell(i, 0).value
-                key2 = int(tab_time_station.cell(i, 1).value)
-                a[key2] = tab_time_station.cell(i, 2).value
+                cur_origin = list_time_station[i][0]
+                key2 = int(list_time_station[i][1])
+                a[key2] = float(list_time_station[i][2])
                 time_station[key1[i]] = a
+                
+#        print(station,lane,cost_lane,cost_station,time_station["N001"][1],"time_station",time_station,demand_point)
 
         return station, lane, cost_lane, cost_station, time_station, demand_point
 
@@ -174,27 +249,48 @@ class import_data():
         return nt_b
 
     def set_prob(self):
-        book = xlrd.open_workbook("LLH.xlsx")
-        # 找到sheet页
-        tab_TM = book.sheet_by_name("TM")
-        tab_SM = book.sheet_by_name("SM")
-        row_Num1 = tab_TM.nrows
-        col_Num1 = tab_TM.ncols
-        row_Num2 = tab_SM.nrows
-        col_Num2 = tab_SM.ncols
+#        book = xlrd.open_workbook("LLH.xlsx")
+#        # 找到sheet页
+#        tab_TM = book.sheet_by_name("TM")
+#        tab_SM = book.sheet_by_name("SM")
+#        row_Num1 = tab_TM.nrows
+#        col_Num1 = tab_TM.ncols
+#        row_Num2 = tab_SM.nrows
+#        col_Num2 = tab_SM.ncols
+        LLH_TM = []
+        LLH_SM = []
+        
+        with open('LLH_TM.csv', 'r') as fo1:            
+            lines1 = fo1.readlines()
+        for ln in lines1:
+            ln = ln.strip('\n')
+            a = ln.split(',') 
+            LLH_TM.append(a)
+    
+        with open('LLH_SM.csv', 'r') as fo2:
+            lines2 = fo2.readlines()
+        for ln in lines2:
+            ln = ln.strip('\n')
+            a = ln.split(',') 
+
+            LLH_SM.append(a)
+
+#        print(type(LLH_TM),LLH_TM,LLH_SM)  
+
+        
         TM = {}
         key1 = {}
         key2 = {}
-        val = np.array(np.zeros((row_Num1-1, col_Num1-1)), dtype=np.int)
+        val = np.array(np.zeros((len(LLH_TM)-1, len(LLH_TM)-1)), dtype=np.int)
 #        a={}
-        for i in range(row_Num1-1):
-            key1[i] = tab_TM.cell(i+1, 0).value
-        for j in range(col_Num1-1):
-            key2[j] = tab_TM.cell(0, j+1).value
-        for i in range(row_Num1-1):
+        for i in range(len(LLH_TM)-1):
+            key1[i] = LLH_TM[i+1][0]
+        for j in range(len(LLH_TM)-1):
+            key2[j] = LLH_TM[0][j+1]
+        for i in range(len(LLH_TM)-1):
             a = {}
-            for j in range(col_Num1-1):
-                val[i, j] = tab_TM.cell(i+1, j+1).value
+            for j in range(len(LLH_TM)-1):
+                val[i,j] = LLH_TM[i+1][j+1]
             for k in range(len(key2)):
                 a[key2[k]] = val[i, k]
             TM[key1[i]] = a
@@ -202,19 +298,20 @@ class import_data():
         SM = {}
         key1 = {}
         key2 = {}
-        val = np.array(np.zeros((row_Num2-1, col_Num2-1)), dtype=np.int)
+        val = np.array(np.zeros((len(LLH_SM)-1, 2)), dtype=np.int)
 #        a={}
-        for i in range(row_Num2-1):
-            key1[i] = tab_SM.cell(i+1, 0).value
-        for j in range(col_Num2-1):
-            key2[j] = tab_SM.cell(0, j+1).value
-        for i in range(row_Num2-1):
+        for i in range(len(LLH_SM)-1):
+            key1[i] = LLH_SM[i+1][0]
+        for j in range(2):
+            key2[j] = LLH_SM[0][j+1]
+        for i in range(len(LLH_SM)-1):
             a = {}
-            for j in range(col_Num2-1):
-                val[i, j] = tab_SM.cell(i+1, j+1).value
+            for j in range(2):
+                val[i, j] = int(LLH_SM[i+1][j+1])
             for k in range(len(key2)):
                 a[key2[k]] = val[i, k]
             SM[key1[i]] = a
+#        print(TM,SM)
         return TM, SM
 
 
@@ -281,7 +378,10 @@ class import_data():
 #                     s[key1[i]]=a
 #        return s
 #r = import_data()
-# od_info,od_flow=r.read_od("ND.xlsx","od_demand")
+##station, lane, cost_lane, cost_station, time_station, demand_point = r.set_sta_lane(2)
+
+#od_info=r.read_od(0,0)
+#tm,sm = r.set_prob()
 # for i in range(len(od_info)):
 #    o = od_info[i][0]
 #    d = od_info[i][1]
