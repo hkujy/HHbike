@@ -170,14 +170,13 @@ def initialization(_net_a,_net_b,od_info,od_flow,_label_lane,_label_station,dema
 
      
 #def FW_main(network_a, network_b, od_flow, origins, destinations,_label_lane,_label_station,time_station):
-def FW_main(network_a, network_b,od_info,od_flow,_label_lane,_label_station,time_station,UE_converge,sita,fy,demand):
+def FW_main(network_a, network_b,od_info,od_flow,_label_lane,_label_station,UE_converge,sita,fy,demand):
 
     (va_x,vb_x,od_flow_a,od_flow_b,per_b) = initialization(network_a,network_b,od_info,od_flow,_label_lane,_label_station,demand)
-    IterCounter = 0
+#    IterCounter = 0
     converge = 1
     time_cost=0
-    while converge>=UE_converge and IterCounter<500:
-#    while IterCounter<300:
+    while converge>=UE_converge:
         No_edge = len(_label_lane)
         update_net_cost(network_a,network_b,va_x,vb_x,_label_lane,No_edge)
         (va_y,vb_y,v_b,per_b,timecost_b) = find_y_flow(network_a,network_b,od_info,od_flow,od_flow_a,od_flow_b,_label_station,per_b,sita,fy)
@@ -199,8 +198,8 @@ def FW_main(network_a, network_b,od_info,od_flow,_label_lane,_label_station,time
                 od_flow_b[o][d]=0
             od_flow_a[o][d]=od_flow[o][d]-od_flow_b[o][d]
         converge = cal_limit(va_x,va_old, vb_x, vb_old)
-        IterCounter+=1
-        # print("iter={0},gap={1}".format(IterCounter,converge))
+#        IterCounter+=1
+#    print("iter={0},gap={1}".format(IterCounter,converge))
  
 
 #        for o in origins:
@@ -271,20 +270,20 @@ def FW_main(network_a, network_b,od_info,od_flow,_label_lane,_label_station,time
 #            if per_b[o][d]!=0:
 #                p+=od_flow_b[o][d]
 #        vol_b_d[d]=p
-    
-    walk_time=0    
-    for i in range(len(od_info)):
-        o = od_info[i][0]
-        d = od_info[i][1]
-        if od_flow_b[o][d]!=0:
-            for j in range(len(demand)):
-                if o in ["N{:0>3}".format(demand[j])]:
-                    walk_time+=od_flow_b[o][d]*time_station[o][_label_station[j]]
-            for j in range(len(demand)):
-                if d in ["N{:0>3}".format(demand[j])]:
-                    walk_time+=od_flow_b[o][d]*time_station[d][_label_station[j]]
-    #            walk_time+=od_flow_b[o][d]*time_station[d][j]
-#                
+#'''    
+#    walk_time=0    
+#    for i in range(len(od_info)):
+#        o = od_info[i][0]
+#        d = od_info[i][1]
+#        if od_flow_b[o][d]!=0:
+#            for j in range(len(demand)):
+#                if o in ["N{:0>3}".format(demand[j])]:
+#                    walk_time+=od_flow_b[o][d]*time_station[o][_label_station[j]]
+#            for j in range(len(demand)):
+#                if d in ["N{:0>3}".format(demand[j])]:
+#                    walk_time+=od_flow_b[o][d]*time_station[d][_label_station[j]]                    
+#'''
+          
  
     
     
@@ -299,11 +298,11 @@ def FW_main(network_a, network_b,od_info,od_flow,_label_lane,_label_station,time
 #    print('walk_time',walk_time)
 #    
     
-    time_cost=cal_timecost(network_a,network_b,va_x,vb_x,_label_lane,walk_time)
+    time_cost=cal_timecost(network_a,network_b,va_x,vb_x,_label_lane)
     time_cost*=20000
     return va_x,vb_x,time_cost,od_flow_b
-def cal_timecost(_network_a,_network_b,_va_x,_vb_x,_lab_lane,walk_time):
-    _time_cost=walk_time
+def cal_timecost(_network_a,_network_b,_va_x,_vb_x,_lab_lane):
+    _time_cost=0
     a=0
     for lid in _va_x.keys():
         for j in range(1,len(_lab_lane)+1):

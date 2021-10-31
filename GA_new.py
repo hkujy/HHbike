@@ -18,71 +18,79 @@ import set_exp_id as sid
 
 data = import_data.import_data()
 
-def population(Pop_size, lane, demand, time_station):
+def population(Pop_size, lane, demand,cost_station, cost_lane, Budget, od_info,
+               od_flow, nt_a, nt_b, UE_converge, sita, fy):
     Initial_Group = np.array(
         np.zeros((Pop_size, len(lane)+len(demand)+2)), dtype=np.int64)
-    for i in range(Pop_size):
-        Initial_Group[i, 0:len(lane)] = np.random.randint(0, 2, len(lane))
+    no_sol = 0
+    while no_sol < Pop_size:
+        Initial_Group[no_sol,0:len(lane)+len(demand)] = np.random.randint(0, 2, len(lane)+len(demand))
+        a0,a1,a2,a3 = cal_new_cost(Initial_Group[no_sol,len(lane):len(lane)+len(demand)],
+                Initial_Group[no_sol,0:len(lane)],cost_station, cost_lane, lane, 
+                Budget, od_info, od_flow, nt_a, nt_b, UE_converge, sita, fy, demand)   
+        if a1 <= Budget:
+            Initial_Group[no_sol,len(lane)+len(demand)], Initial_Group[no_sol,len(lane)+len(demand)+1]= a0,a1
+            no_sol = no_sol + 1
+            
+            
+    
+#    for i in range(Pop_size):
+#        Initial_Group[i, 0:len(lane)+len(demand)] = np.random.randint(0, 2, len(lane)+len(demand))
         # print(Initial_Group[i, 0:len(lane)])
 #        Initial_Group[i,len(lane):len(lane)+len(station)]= np.random.randint(0,len(demand)+1,len(station))
 #        Initial_Group[i,len(lane):len(lane)+len(station)]= np.array([1,0,0,2,0,3])
-        for j in range(0, len(demand)):
-            f = []
-            a = np.random.random()
-            if a > 0.5:
-                f = list(time_station["N{:0>3}".format(demand[j])].keys())
-                Initial_Group[i,len(lane)+j]=np.random.choice(f)
-            else:
-                Initial_Group[i,len(lane)+j]=0
+#        for j in range(0, len(demand)):
+#            f = []
+#            a = np.random.random()
+#            if a > 0.5:
+#                f = list(time_station["N{:0>3}".format(demand[j])].keys())
+#                Initial_Group[i,len(lane)+j]=np.random.choice(f)
+#            else:
+#                Initial_Group[i,len(lane)+j]=0
 #            f = list(time_station["N{:0>3}".format(demand[j])].keys())
 #            Initial_Group[i, len(lane)+j] = np.random.choice(f)
     return Initial_Group
 
 
-def cal_new_cost(label_station, label_lane, cost_station, cost_lane, lane, time_station, Budget, od_info, od_flow, nt_a, nt_b, UE_converge, sita, fy, demand):
-    #    start_fit =time.time()
-    # fixed_cost
+def cal_new_cost(_label_station, _label_lane, _cost_station, _cost_lane, _lane, Budget, od_info, od_flow, nt_a, nt_b, UE_converge, sita, fy, demand):
     fixed_cost = 0
-    new_cost = 0
-    once_FW = 0
-    for i in lane:
-        if label_lane[i] != 0:
-            fixed_cost += cost_lane[i]
+    _new_cost = 0
+    once_FW_time = 0
+    od_flow_bike = copy.deepcopy(od_flow)
+#    print ("lane = ",_label_lane, " station=", _label_station)
     for i in range(len(demand)):
-        if label_station[i] != 0:
-            fixed_cost = fixed_cost+cost_station[label_station[i]-1]
-    # if fixed_cost>1582300:
+        if _label_station[i] != 0:
+            fixed_cost += _cost_station[i]
+    for i in _lane:
+        if _label_lane[i] != 0:
+            fixed_cost += _cost_lane[i]
     if fixed_cost > Budget:
-        new_cost = fixed_cost+Budget
+        _new_cost =1000000000000000+fixed_cost
     else:
        # time_cost
         time_cost = 0
-        No_edge = len(cost_lane)
-#        od_flow, origins, destinations = set_input.od_demand()
-#        nt_a = set_input.read_network_auto(label_lane)
-#        nt_b = set_input.read_network_bike(label_lane)
-        nt_a = data.read_network_auto(nt_a, label_lane, No_edge)
-        nt_b = data.read_network_bike(nt_b, label_lane, No_edge)
-#        vol_a,vol_b,time_cost = FW_main(nt_a,nt_b,od_flow,origins,destinations,label_lane,label_station,time_station)
-        sta = time.time()
-        vol_a, vol_b, time_cost,od_flow_bike = assignment.assign.FW_main(
-            nt_a, nt_b, od_info, od_flow, label_lane, label_station, time_station, UE_converge, sita, fy, demand)
-        end = time.time()
-#        print("FW_time=",end-sta)
-        once_FW = end - sta
-#        print("FW=",end-sta)
-#        if gl.isOutPutDetail:
+        No_edge = len(_cost_lane)
+        nt_a = data.read_network_auto(nt_a, _label_lane, No_edge)
+        nt_b = data.read_network_bike(nt_b, _label_lane, No_edge)
+        star_FW = time.time()
+#        print("lane=",_label_lane,"station=",_label_station)
+        vol_a, vol_b, time_cost, od_flow_bike = assignment.assign.FW_main(
+            nt_a, nt_b, od_info, od_flow, _label_lane, _label_station, UE_converge, sita, fy, demand)
+#        print("od_flow_bike=",od_flow_bike)
+        end_FW = time.time()
+        once_FW_time = end_FW-star_FW
+#        print("fw time=", end_FW-star_FW)
+#        if isOutPutDetail:
 #        print("*****motor vehicles*****")
 #        for link in vol_a.keys():
 #            print("{0},{1}".format(link,vol_a[link]))
 #        print("*****bikes*****")
 #        for link in vol_b.keys():
 #            print("{0},{1}".format(link,vol_b[link]))
-        new_cost = time_cost+fixed_cost
-#        print("FW")
-#    end_fit=time.time()
-#    print("fit_time   ",end_fit-start_fit)
-    return new_cost, fixed_cost, once_FW,od_flow_bike
+
+        _new_cost = time_cost+fixed_cost
+    return _new_cost, fixed_cost, once_FW_time, od_flow_bike
+
 
 
 def father_pair(Pop_size):
@@ -126,7 +134,7 @@ def crossover(Group, couples, cross_p, lane, demand):  # cross_p为交叉概率
                            0:point1+1] = unit_two[0:point1+1]
             new_population[i+np.size(couples, 0), point1 +
                            1:len(lane)] = unit_one[point1+1:len(lane)]
-            new_population[i+np.size(couples, 0), len(lane)                           :point2+1] = unit_two[len(lane):point2+1]
+            new_population[i+np.size(couples, 0), len(lane):point2+1] = unit_two[len(lane):point2+1]
             new_population[i+np.size(couples, 0), point2+1:len(lane) +
                            len(demand)] = unit_one[point2+1:len(lane)+len(demand)]
         else:
@@ -135,10 +143,10 @@ def crossover(Group, couples, cross_p, lane, demand):  # cross_p为交叉概率
     return new_population
 
 
-def mutation(Group, mut_p, lane, cost_station, cost_lane, time_station, Budget, od_info, od_flow, nt_a, nt_b, UE_converge, sita, fy, demand):
+def mutation(Group, mut_p, lane, cost_station, cost_lane, Budget, od_info, od_flow, nt_a, nt_b, UE_converge, sita, fy, demand):
     new_population = Group
     a = math.ceil(np.size(Group, 0)*mut_p)
-    for i in range(0, a):
+    for i in range(0, a):     
         point_lane = []
         while(len(point_lane) < 2):
             a = np.random.randint(0, len(lane))
@@ -169,17 +177,52 @@ def mutation(Group, mut_p, lane, cost_station, cost_lane, time_station, Budget, 
 #            new_population[i,point2] = 1
 #        else:
 #            new_population[i,point2] = 0
-        for j in range(point1, point2+1):
-            if Group[i, j] == 0:
-                new_population[i, j] = 1
-            else:
-                new_population[i, j] = 0
-        for j in range(point3, point4+1):
-            d = np.random.choice(
-                list(time_station["N{:0>3}".format(demand[j-len(lane)])].keys()))
-            if d == Group[i, j]:
-                d = 0
-            new_population[i, j] = d
+
+        if Group[i, point1] == 0:
+           new_population[i, point1] = 1
+        else:
+           new_population[i, point1] = 0 
+
+        if Group[i, point2] == 0:
+           new_population[i, point2] = 1
+        else:
+           new_population[i, point2] = 0 
+         
+        if Group[i, point3] == 0:
+           new_population[i, point3] = 1
+        else:
+           new_population[i, point3] = 0 
+
+        if Group[i, point4] == 0:
+           new_population[i, point4] = 1
+        else:
+           new_population[i, point4] = 0 
+
+
+#...........................
+#        for j in range(point1, point2+1):
+#            if Group[i, j] == 0:
+#                new_population[i, j] = 1
+#            else:
+#                new_population[i, j] = 0
+#        for j in range(point3, point4+1):
+#            if Group[i, j] == 0:
+#                new_population[i, j] = 1
+#            else:
+#                new_population[i, j] = 0
+
+#...............................................zhege
+
+
+
+
+
+
+#            d = np.random.choice(
+#                list(time_station["N{:0>3}".format(demand[j-len(lane)])].keys()))
+#            if d == Group[i, j]:
+#                d = 0
+#            new_population[i, j] = d
 #
 
 #        p = random.random()
@@ -243,7 +286,7 @@ def mutation(Group, mut_p, lane, cost_station, cost_lane, time_station, Budget, 
     n_FW_time = 0
     for i in range(np.size(Group, 0)):
         new_population[i, np.size(new_population, 1)-2], new_population[i, np.size(new_population, 1)-1], once_FW,odbike_flow = cal_new_cost(new_population[i, len(lane):len(lane)+len(
-            demand)], new_population[i, 0:len(lane)], cost_station, cost_lane, lane, time_station, Budget, od_info, od_flow, nt_a, nt_b, UE_converge, sita, fy, demand)
+            demand)], new_population[i, 0:len(lane)], cost_station, cost_lane, lane, Budget, od_info, od_flow, nt_a, nt_b, UE_converge, sita, fy, demand)
         n_FW_time = n_FW_time+once_FW
     new_population = new_population[np.argsort(
         new_population[:, np.size(new_population, 1)-2])]
@@ -251,7 +294,7 @@ def mutation(Group, mut_p, lane, cost_station, cost_lane, time_station, Budget, 
     return new_population, n_FW_time,odbike_flow
 
 
-def next_pop(Father_Group, Child_Group, lane, station, cost_station, cost_lane):
+def next_pop(Father_Group, Child_Group, lane, cost_station, cost_lane):
     tem_population = np.array(np.zeros((np.size(
         Father_Group, 0)+np.size(Child_Group, 0), np.size(Father_Group, 1))), dtype=np.int64)
     new_population = np.array(
@@ -358,68 +401,98 @@ def next_pop(Father_Group, Child_Group, lane, station, cost_station, cost_lane):
 
 
 def run_ga(Ex_ID):
-    case_ID, demand_ID, Budget, fy, sita, UE_converge, isOutPutDetail, Max_gen, cross_p, mutation_p, Pop_size = sid.set_Ex_ID(
+    case_ID, demand_ID, Budget, fy, sita, UE_converge, Max_gen, cross_p, mutation_p, Pop_size = sid.set_Ex_ID(
         Ex_ID, _alg="GA")
 
     # od_info list, od_demand  dict
     od_info, od_flow = data.read_od(case_ID, demand_ID)
 
-    station, lane, cost_lane, cost_station, time_station, demand = data.set_sta_lane(
+    lane, cost_lane, cost_station, demand = data.set_sta_lane(
         case_ID)
 
-    nt_a, nt_b = data.set_network(case_ID)
+    nt_a, nt_b, net_bike = data.set_network(case_ID)
 
     result = []
     cal_FW_time = 0
 
     start_time = time.time()
-    Initial_Group = population(Pop_size, lane, demand, time_station)
-    for i in range(Pop_size):
-        print("GA ini sol = ",i)
-        Initial_Group[i, np.size(Initial_Group, 1)-2], Initial_Group[i, np.size(Initial_Group, 1)-1], once_FW_time,od_bike = cal_new_cost(Initial_Group[i, len(lane):len(lane)+len(
-            station)], Initial_Group[i, 0:len(lane)], cost_station, cost_lane, lane, time_station, Budget, od_info, od_flow, nt_a, nt_b, UE_converge, sita, fy, demand)
-        cal_FW_time = cal_FW_time + once_FW_time
+    Initial_Group = population(Pop_size, lane, demand,cost_station, cost_lane, 
+                               Budget, od_info,od_flow, nt_a, nt_b, UE_converge, sita, fy)
+#    for i in range(Pop_size):
+#        print("GA ini sol = ",i)
+#        Initial_Group[i, np.size(Initial_Group, 1)-2], Initial_Group[i, np.size(Initial_Group, 1)-1], once_FW_time,od_bike = cal_new_cost(Initial_Group[i, len(lane):len(lane)+len(
+#            station)], Initial_Group[i, 0:len(lane)], cost_station, cost_lane, lane, time_station, Budget, od_info, od_flow, nt_a, nt_b, UE_converge, sita, fy, demand)
+#        cal_FW_time = cal_FW_time + once_FW_time
     Initial_Group = Initial_Group[np.argsort(
         Initial_Group[:, np.size(Initial_Group, 1)-2])]
     parent = father_pair(Pop_size)
 #    parent = np.array([[0,1],[2,3]])
     after_cross = crossover(Initial_Group, parent, cross_p, lane, demand)
     after_mutation, n_FW_time, bike_flow = mutation(after_cross, mutation_p, lane, cost_station, cost_lane,
-                                         time_station, Budget, od_info, od_flow, nt_a, nt_b, UE_converge, sita, fy, demand)
+                                         Budget, od_info, od_flow, nt_a, nt_b, UE_converge, sita, fy, demand)
     cal_FW_time = cal_FW_time + n_FW_time
     children = next_pop(Initial_Group, after_mutation, lane,
-                        station, cost_station, cost_lane)
-    min_cost = np.array(np.zeros((Max_gen, 1)), dtype=np.int64)
-    min_cost[0, 0] = children[0, np.size(children, 1)-2]
-    sol_cost = np.array(
-        np.zeros((Max_gen, np.size(Initial_Group, 1))), dtype=np.int64)
-    sol_cost[0, :] = children[0, :]
-    for i in range(1, Max_gen):
+                        cost_station, cost_lane)
+    # time stop
+    min_cost=[]
+    min_cost.append(children[0, np.size(children, 1)-2])
+    sol_cost = []
+    sol_cost.append(children[0, :])
+    # min_cost = np.array(np.zeros((Max_gen, 1)), dtype=np.int64)
+    # min_cost[0, 0] = children[0, np.size(children, 1)-2]
+    # sol_cost = np.array(
+    #     np.zeros((Max_gen, np.size(Initial_Group, 1))), dtype=np.int64)
+    # sol_cost[0, :] = children[0, :]
+    
+    cur_time = 0
+    i = 0
+    while cur_time-start_time <=300:
+        cur_time = time.time()
+        i = i+1
+    # for i in range(1, Max_gen):
         print("GA Generation = ",i)
         parent = father_pair(Pop_size)
         after_cross = crossover(children, parent, cross_p, lane, demand)
         after_mutation, n_FW_time,bike_flow = mutation(after_cross, mutation_p, lane, cost_station, cost_lane,
-                                             time_station, Budget, od_info, od_flow, nt_a, nt_b, UE_converge, sita, fy, demand)
+                                             Budget, od_info, od_flow, nt_a, nt_b, UE_converge, sita, fy, demand)
         cal_FW_time = cal_FW_time + n_FW_time
         children = next_pop(children, after_mutation, lane,
-                            station, cost_station, cost_lane)
-        min_cost[i, 0] = children[:, np.size(children, 1)-2].min()
+                            cost_station, cost_lane)
+        # min_cost[i, 0] = children[:, np.size(children, 1)-2].min()
+        
+        #  time stop
+        min_cost.append (children[:, np.size(children, 1)-2].min())
+        
 #        print(min_cost[i,0])
-        sol_cost[i, :] = children[0, :]
+        # sol_cost[i, :] = children[0, :]
+        
+        #  time stop
+        sol_cost.append( children[0, :])
+        
         # plt.plot(min_cost)
     end_time = time.time()
     cal_time = end_time-start_time
     best_iter = np.argmin(min_cost)
-    best_cost = sol_cost[best_iter, np.size(sol_cost, 1)-2]
-    fixcost = sol_cost[best_iter, np.size(sol_cost, 1)-1]
+    # best_cost = sol_cost[best_iter, np.size(sol_cost, 1)-2]
+    # fixcost = sol_cost[best_iter, np.size(sol_cost, 1)-1]
+    # best_lane = np.array(np.zeros((len(lane))))
+    # best_station = np.array(np.zeros((len(demand))))
+    # best_lane[0:len(lane)] = sol_cost[best_iter, 0:len(lane)]
+    # best_station[0:len(demand)] = sol_cost[best_iter,
+    #                                        len(lane):len(demand)+len(lane)]
+
+#  time stop
+    best_cost = sol_cost[best_iter][np.size(sol_cost, 1)-2]
+    fixcost = sol_cost[best_iter][np.size(sol_cost, 1)-1]
     best_lane = np.array(np.zeros((len(lane))))
     best_station = np.array(np.zeros((len(demand))))
-    best_lane[0:len(lane)] = sol_cost[best_iter, 0:len(lane)]
-    best_station[0:len(demand)] = sol_cost[best_iter,
-                                           len(lane):len(demand)+len(lane)]
+    best_lane[0:len(lane)] = sol_cost[best_iter][0:len(lane)]
+    best_station[0:len(demand)] = sol_cost[best_iter][len(lane):len(demand)+len(lane)]
+
+
 
     result = ["{0}{1}".format("Ex ", Ex_ID), best_cost, fixcost, (best_cost-fixcost) /
-              20000, best_lane, best_station, best_iter, cal_time, cal_FW_time,bike_flow]
+              20000, best_lane, best_station, best_iter, cal_time, cal_FW_time,bike_flow,i]
 
 
 #    print('best_iter=',best_iter)

@@ -68,8 +68,8 @@ class import_data():
         od_demand = {}
         key1 = {}
         a = {}
-        for i in range(len(od_info)):
-            key1[i] = od_info[i][0]
+#        for i in range(len(od_info)):
+#            key1[i] = od_info[i][0]
         cur_origin = od_info[0][0]
         for i in range(len(od_info)):
             key1[i] = od_info[i][0]
@@ -85,6 +85,8 @@ class import_data():
                 a[key2] = int(od_info[i][2])
                 od_demand[key1[i]] = a           
 #        print("od_demand",od_demand,type(od_demand),od_demand["N001"]["N003"])
+        
+#        print("od_info=",od_info,"od_demand=",od_demand)
         return od_info,od_demand
         
 
@@ -116,29 +118,46 @@ class import_data():
         if case_ID == 0:
             with open('bike_small.csv', 'r') as fo:
                 lines = fo.readlines()
-                for ln in lines:
-                    eg_b = ln.split(',')
-                    nt_b.add_edge(edge_b(eg_b))
+#                for ln in lines:
+#                    eg_b = ln.split(',')
+#                    nt_b.add_edge(edge_b(eg_b))
         if case_ID == 1:
             with open('bike_ND.txt', 'r') as fo:
                 lines = fo.readlines()
-                for ln in lines:
-                    eg_b = ln.split(',')
-                    nt_b.add_edge(edge_b(eg_b))
+#                for ln in lines:
+#                    eg_b = ln.split(',')
+#                    nt_b.add_edge(edge_b(eg_b))
         if case_ID == 2:
             with open('bike_SF.csv', 'r') as fo:
                 lines = fo.readlines()
-                for ln in lines:
-                    eg_b = ln.split(',')
-                    nt_b.add_edge(edge_b(eg_b))
+#                for ln in lines:
+#                    eg_b = ln.split(',')
+#                    nt_b.add_edge(edge_b(eg_b))
+#        print (type(nt_a))
+        
 
-        return nt_a, nt_b
+        network_bike_info = []
+        for ln in lines:
+            eg_b = ln.split(',')
+            nt_b.add_edge(edge_b(eg_b))
+            network_bike_info.append(eg_b)
+        key1 = {}
+        network_bike = {}
+        for i in range(len(network_bike_info)):
+            a = {}
+            key1[i] = network_bike_info[i][0]
+            a['o'] = network_bike_info[i][1]
+            a['d'] = network_bike_info[i][2]
+            network_bike[key1[i]] = a
+#        print("network_bike= ", network_bike)
+
+        return nt_a, nt_b,network_bike
 
     def set_sta_lane(self, case_ID):
         
         list_cost_lane = []
         list_cost_station = []
-        list_time_station = []
+#        list_time_station = []
         list_demand_point = []
         
         od_info = []
@@ -147,8 +166,8 @@ class import_data():
                 lines1 = fo1.readlines()
             with open('Small_Station_cost.csv', 'r') as fo2:
                 lines2 = fo2.readlines()
-            with open('Small_Time_station.csv', 'r') as fo3:
-                lines3 = fo3.readlines()
+#            with open('Small_Time_station.csv', 'r') as fo3:
+#                lines3 = fo3.readlines()
             with open('Small_Demand_point.csv', 'r') as fo4:
                 lines4 = fo4.readlines()
                 
@@ -157,8 +176,8 @@ class import_data():
                 lines1 = fo1.readlines()
             with open('ND_Station_cost.csv', 'r') as fo2:
                 lines2 = fo2.readlines()
-            with open('ND_Time_station.csv', 'r') as fo3:
-                lines3 = fo3.readlines()
+#            with open('ND_Time_station.csv', 'r') as fo3:
+#                lines3 = fo3.readlines()
             with open('ND_Demand_point.csv', 'r') as fo4:
                 lines4 = fo4.readlines()
         
@@ -167,8 +186,8 @@ class import_data():
                 lines1 = fo1.readlines()
             with open('SF_Station_cost.csv', 'r') as fo2:
                 lines2 = fo2.readlines()
-            with open('SF_Time_station.csv', 'r') as fo3:
-                lines3 = fo3.readlines()
+#            with open('SF_Time_station.csv', 'r') as fo3:
+#                lines3 = fo3.readlines()
             with open('SF_Demand_point.csv', 'r') as fo4:
                 lines4 = fo4.readlines()
         
@@ -183,9 +202,9 @@ class import_data():
             a = ln.split(',')
             list_cost_station.append(a)
             
-        for ln in lines3:
-            a = ln.split(',')
-            list_time_station.append(a)
+#        for ln in lines3:
+#            a = ln.split(',')
+#            list_time_station.append(a)
         
         for ln in lines4:
             a = ln.split(',')
@@ -197,7 +216,7 @@ class import_data():
         
         
         lane = range(0, len(list_cost_lane))
-        station = range(0, len(list_cost_station))
+#        station = range(0, len(list_cost_station))
         demand_point = np.array(np.zeros((len(list_demand_point))),dtype=np.int)
         for i in range (len(list_demand_point)):
             demand_point[i] = int(list_demand_point[i][0])
@@ -214,29 +233,29 @@ class import_data():
 #        for i in range(len(list_time_station)):
 #            a = list_time_station[i]
 #            od_sta_info.append(a)
-        time_station = {}
-        key1 = {}
-        a = {}
-        for i in range(len(list_time_station)):
-            key1[i] = list_time_station[i][0]
-        cur_origin = list_time_station[0][0]
-        for i in range(len(list_time_station)):
-            key1[i] = list_time_station[i][0]
-            if key1[i] == cur_origin:
-                key2 = int(list_time_station[i][1])
-                a[key2] = float(list_time_station[i][2])
-                time_station[key1[i]] = a
-            else:
-                a = {}
-                key2 = {}
-                cur_origin = list_time_station[i][0]
-                key2 = int(list_time_station[i][1])
-                a[key2] = float(list_time_station[i][2])
-                time_station[key1[i]] = a
+#        time_station = {}
+#        key1 = {}
+#        a = {}
+#        for i in range(len(list_time_station)):
+#            key1[i] = list_time_station[i][0]
+#        cur_origin = list_time_station[0][0]
+#        for i in range(len(list_time_station)):
+#            key1[i] = list_time_station[i][0]
+#            if key1[i] == cur_origin:
+#                key2 = int(list_time_station[i][1])
+#                a[key2] = float(list_time_station[i][2])
+#                time_station[key1[i]] = a
+#            else:
+#                a = {}
+#                key2 = {}
+#                cur_origin = list_time_station[i][0]
+#                key2 = int(list_time_station[i][1])
+#                a[key2] = float(list_time_station[i][2])
+#                time_station[key1[i]] = a
                 
 #        print(station,lane,cost_lane,cost_station,time_station["N001"][1],"time_station",time_station,demand_point)
 
-        return station, lane, cost_lane, cost_station, time_station, demand_point
+        return lane, cost_lane, cost_station, demand_point
 
     def read_network_auto(self, nt_a, _label_lane, No_edge):
         # initialize cost_auto
@@ -435,3 +454,5 @@ class import_data():
 #r = Read_Ex()
 # s=r.read_excel()
 # print(s['N001','N005'])
+
+#a = r.set_network(1)
