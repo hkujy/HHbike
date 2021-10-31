@@ -496,7 +496,6 @@ def run_upper(Ex_ID):
         case_ID)
     nt_a, nt_b,net_bike = data.set_network(case_ID)
 
-#    
     # ....................Initialization
 
     LLH = ['L0','L1','L2','L3','L4','L5','L6','L7']
@@ -644,14 +643,6 @@ def run_upper(Ex_ID):
 #    best_cost =  Initial_solution[0,len(lane)+len(demand)]
 #    cur_cost = Initial_solution[0,len(lane)+len(demand)]
 #.............................................................................
-
-
-
-
-
-
-
-
 # fixed solution .......................................
     best_lane = np.array(np.zeros((len(lane))), dtype=np.int)
 #
@@ -660,13 +651,8 @@ def run_upper(Ex_ID):
     
 #    best_lane[0:len(lane)]= copy.deepcopy(init_lane)
 #    best_station[0:len(demand)]= copy.deepcopy(init_station)
-    
-    
 #    best_lane[0:len(lane)]= np.random.randint(0, 2, len(lane))
 #    best_station[0:len(demand)]= np.random.randint(0, 2, len(demand))
-#    
-    
-    
     
     
     
@@ -676,8 +662,6 @@ def run_upper(Ex_ID):
         for i in range(len(demand)):
      #        best_station[i] = Initial_solution[0,len(lane)+i]
             best_station[i] = 1
-    
-    
 
     a0,a1,a2 = cal_new_cost(best_station,best_lane,cost_station, cost_lane, lane, 
                 Budget, od_info, od_flow, nt_a, nt_b, UE_converge, sita, fy, demand)   
